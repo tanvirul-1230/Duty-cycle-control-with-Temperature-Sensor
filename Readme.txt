@@ -18,7 +18,7 @@ Motor speed is linearly mapped to a specific temperature range (off below 20°C,
 
 Microcontroller: Arduino Uno
 
-Sensor: LM35 Analog Temperature Sensor
+Sensor: DHT11 sensor Analog Temperature Sensor
 
 Display: 16x2 I2C LCD
 
@@ -32,14 +32,19 @@ Software: C++ (Arduino IDE)
 
 📸 Demo & Schematics
 
-https://github.com/tanvirul-1230/Duty-cycle-control-with-Temperature-Sensor/blob/main/Circuit%20diagram.jpg
+Here are the visuals for the project.
 
+Circuit Diagram:
+This diagram shows all the connections for the project.
 
-Added all the files and
+Project Photo:
+This is the final assembled circuit.
 
-We have used an LED to show the duty cycle instead of a DC Motor. But the dc motor will produce the same result as it is for output purpose only.
+Video Demo:
+A short video demonstrating the motor speed changing as the sensor is heated or cooled. Note: GitHub doesn't embed MP4 videos in READMEs, but this link will take users directly to the video file in your repository.
+Click to Watch Project Video
 
-https://github.com/tanvirul-1230/Duty-cycle-control-with-Temperature-Sensor/blob/main/Original%20Pic.jpg
+A note from your Readme.txt: "We have used an LED to show the duty cycle instead of a DC Motor. But the dc motor will produce the same result as it is for output purpose only."
 
 🔧 How It Works
 
@@ -58,4 +63,5 @@ MAX_TEMP (50°C) = 255 speed (100% duty cycle)
 Control Motor: The analogWrite() function sends this PWM signal to the ENA (Enable) pin of the L298N motor driver, which in turn delivers the correct amount of power to the motor.
 
 Display: Simultaneously, the calculated temperature and speed percentage are sent to the I2C LCD for real-time monitoring.
+
 
