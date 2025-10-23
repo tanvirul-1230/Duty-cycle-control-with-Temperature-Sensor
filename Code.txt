@@ -1,0 +1,117 @@
+/*
+  Project: Temperature-Controlled Motor Speed
+  Author: [Your Name]
+  Date: [Today's Date]
+
+  Description:
+  This project reads the ambient temperature from an LM35 sensor,
+  displays the temperature (C) and motor speed (%) on a 16x2 I2C LCD,
+  and controls the speed of a DC motor using an L298N driver.
+
+  - The motor speed is mapped to a temperature range (e.g., 20°C to 50°C).
+  - Below 20°C, the motor is off.
+  - Above 50°C, the motor is at 100% speed.
+*/
+
+// 1. Include necessary libraries
+#include <Wire.h>                 // For I2C communication
+#include <LiquidCrystal_I2C.h>    // For the I2C LCD
+
+// 2. Define Constants and Pins
+
+// --- Sensor Pin ---
+const int TEMP_SENSOR_PIN = A0; // LM35 analog output pin
+
+// --- Motor Driver Pins (L298N) ---
+const int MOTOR_ENABLE_PIN = 9;   // Must be a PWM pin (e.g., 3, 5, 6, 9, 10, 11)
+const int MOTOR_IN1_PIN = 8;      // Motor direction control 1
+const int MOTOR_IN2_PIN = 7;      // Motor direction control 2
+
+// --- LCD Configuration ---
+// !! NOTE: Your address might be 0x3F. If 0x27 doesn't work, try 0x3F.
+const int LCD_I2C_ADDR = 0x27;
+const int LCD_COLS = 16;
+const int LCD_ROWS = 2;
+
+// --- Control Logic ---
+const float MIN_TEMP = 20.0; // Temp (C) at which motor starts
+const float MAX_TEMP = 50.0; // Temp (C) at which motor is at full speed
+
+// 3. Initialize Objects
+LiquidCrystal_I2C lcd(LCD_I2C_ADDR, LCD_COLS, LCD_ROWS);
+
+// 4. Setup Function (runs once at the start)
+void setup() {
+  // Start Serial Monitor (for debugging)
+  Serial.begin(9600);
+
+  // Initialize the LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.print("Temp Control");
+  lcd.setCursor(0, 1);
+  lcd.print("Starting...");
+  delay(2000);
+  lcd.clear();
+
+  // Set motor control pins as OUTPUT
+  pinMode(MOTOR_ENABLE_PIN, OUTPUT);
+  pinMode(MOTOR_IN1_PIN, OUTPUT);
+  pinMode(MOTOR_IN2_PIN, OUTPUT);
+
+  // Set motor to spin in one direction (e.g., "forward")
+  // To reverse direction, swap HIGH and LOW
+  digitalWrite(MOTOR_IN1_PIN, HIGH);
+  digitalWrite(MOTOR_IN2_PIN, LOW);
+}
+
+// 5. Main Loop Function (runs forever)
+void loop() {
+  // --- Step 1: Read and Calculate Temperature ---
+  int sensorValue = analogRead(TEMP_SENSOR_PIN);
+
+  // Convert the analog reading (0-1023) to voltage (0-5000mV)
+  // And then to temperature (LM35 is 10mV per degree C)
+  // Formula: Temp C = ( (analogValue / 1024.0) * 5000.0) / 10.0
+  float temperatureC = (sensorValue / 1024.0) * 500.0;
+
+  // --- Step 2: Calculate Motor Speed ---
+  // Map the temperature range (20-50°C) to the PWM speed range (0-255)
+  int motorSpeed = map(temperatureC, MIN_TEMP, MAX_TEMP, 0, 255);
+
+  // Constrain the speed to be within 0-255, even if temp is outside the range
+  motorSpeed = constrain(motorSpeed, 0, 255);
+
+  // --- Step 3: Update Motor ---
+  // Send the PWM signal to the motor driver's Enable pin
+  analogWrite(MOTOR_ENABLE_PIN, motorSpeed);
+
+  // --- Step 4: Update LCD Display ---
+  // Calculate duty cycle percentage for display
+  float dutyCycle = (motorSpeed / 255.0) * 100.0;
+
+  // Print Temperature on the first row
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(temperatureC, 1); // Print with 1 decimal place
+  lcd.print(" C  "); // Add spaces to clear old characters
+
+  // Print Speed on the second row
+  lcd.setCursor(0, 1);
+  lcd.print("Speed: ");
+  lcd.print(dutyCycle, 0); // Print with 0 decimal places
+  lcd.print(" %   "); // Add spaces to clear old characters
+
+  // --- Step 5: Debug (Optional) ---
+  // Print values to the Serial Monitor
+  Serial.print("Temp: ");
+  Serial.print(temperatureC);
+  Serial.print(" C  |  Speed (0-255): ");
+  Serial.print(motorSpeed);
+  Serial.print("  |  Duty Cycle: ");
+  Serial.print(dutyCycle);
+  Serial.println(" %");
+
+  // Wait for half a second before taking the next reading
+  delay(500);
+}
