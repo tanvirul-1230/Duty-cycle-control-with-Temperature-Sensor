@@ -44,7 +44,8 @@ Video Demo:
 A short video demonstrating the motor speed changing as the sensor is heated or cooled. Note: GitHub doesn't embed MP4 videos in READMEs, but this link will take users directly to the video file in your repository.
 Click to Watch Project Video
 
-A note from your Readme.txt: "We have used an LED to show the duty cycle instead of a DC Motor. But the dc motor will produce the same result as it is for output purpose only."
+We have used an LED to show the duty cycle instead of a DC Motor. But the dc motor will produce the same result as it is for output purpose only.
+Used DHT11 as LM35 was not available on local market
 
 🔧 How It Works
 
