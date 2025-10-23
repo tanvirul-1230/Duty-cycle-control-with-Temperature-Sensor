@@ -38,11 +38,10 @@ Circuit Diagram:
 This diagram shows all the connections for the project.
 
 Project Photo:
-This is the final assembled circuit.
+Added
 
 Video Demo:
-A short video demonstrating the motor speed changing as the sensor is heated or cooled. Note: GitHub doesn't embed MP4 videos in READMEs, but this link will take users directly to the video file in your repository.
-Click to Watch Project Video
+Added
 
 We have used an LED to show the duty cycle instead of a DC Motor. But the dc motor will produce the same result as it is for output purpose only.
 Used DHT11 as LM35 was not available on local market
@@ -64,5 +63,6 @@ MAX_TEMP (50°C) = 255 speed (100% duty cycle)
 Control Motor: The analogWrite() function sends this PWM signal to the ENA (Enable) pin of the L298N motor driver, which in turn delivers the correct amount of power to the motor.
 
 Display: Simultaneously, the calculated temperature and speed percentage are sent to the I2C LCD for real-time monitoring.
+
 
 
